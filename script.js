@@ -49,12 +49,12 @@ function searchCar() {
     results.forEach(car => {
         const row = `
             <tr>
-                <td>${car['Client'] || '-'}</td>
-                <td>${car['Car No. (English)'] || car['Car No. (Arabic)']}</td>
-                <td>${car['Car Color'] || '-'}</td>
-                <td>${car['Car Model'] || '-'}</td>
-                <td>${car['Status'] || '-'}</td>
-            </tr>
+    <td data-label="الشركة">${car['Client'] || '-'}</td>
+    <td data-label="رقم اللوحة">${car['Car No. (English)'] || car['Car No. (Arabic)']}</td>
+    <td data-label="لون السيارة">${car['Car Color'] || '-'}</td>
+    <td data-label="موديل السيارة">${car['Car Model'] || '-'}</td>
+    <td data-label="الحالة">${car['Status'] || '-'}</td>
+</tr>`;
         `;
         tbody.innerHTML += row;
     });
