@@ -25,6 +25,11 @@ fetch('تحديث بيانات الشركات (1).csv')
                 carsData.push(obj);
             }
         }
+        console.log('CSV Loaded:', carsData.length);
+    })
+    .catch(err => {
+        console.error('CSV load error:', err);
+        alert('فشل تحميل ملف البيانات');
     });
 
 function searchCar() {
@@ -33,6 +38,11 @@ function searchCar() {
     const tbody = table.querySelector('tbody');
 
     tbody.innerHTML = '';
+
+    if (!input) {
+        alert('الرجاء إدخال رقم اللوحة');
+        return;
+    }
 
     const results = carsData.filter(car => {
         const en = normalize(car['Car No. (English)']);
@@ -49,12 +59,14 @@ function searchCar() {
     results.forEach(car => {
         const row = `
             <tr>
-    <td data-label="الشركة">${car['Client'] || '-'}</td>
-    <td data-label="رقم اللوحة">${car['Car No. (English)'] || car['Car No. (Arabic)']}</td>
-    <td data-label="لون السيارة">${car['Car Color'] || '-'}</td>
-    <td data-label="موديل السيارة">${car['Car Model'] || '-'}</td>
-    <td data-label="الحالة">${car['Status'] || '-'}</td>
-</tr>`;
+                <td data-label="الشركة">${car['Client'] || '-'}</td>
+                <td data-label="رقم اللوحة">
+                    ${car['Car No. (English)'] || car['Car No. (Arabic)'] || '-'}
+                </td>
+                <td data-label="لون السيارة">${car['Car Color'] || '-'}</td>
+                <td data-label="موديل السيارة">${car['Car Model'] || '-'}</td>
+                <td data-label="الحالة">${car['Status'] || '-'}</td>
+            </tr>
         `;
         tbody.innerHTML += row;
     });
