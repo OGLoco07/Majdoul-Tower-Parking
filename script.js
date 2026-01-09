@@ -1,7 +1,20 @@
 let carsData = [];
 
-// صوت التنبيه
+// الصوت
 const alertSound = new Audio('alert.mp3');
+let soundEnabled = false;
+
+// تفعيل الصوت بعد أول تفاعل حقيقي
+document.addEventListener('click', enableSound, { once: true });
+document.addEventListener('keydown', enableSound, { once: true });
+
+function enableSound() {
+    alertSound.play().then(() => {
+        alertSound.pause();
+        alertSound.currentTime = 0;
+        soundEnabled = true;
+    }).catch(() => {});
+}
 
 // تنظيف النص
 function normalize(text) {
@@ -30,13 +43,15 @@ fetch('تحديث بيانات الشركات (1).csv')
         }
     });
 
-// تحديد الحالة (صارمة)
+// الحالة (صارمة)
 function getStatus(car) {
-    const statusRaw = car['Status'] || '';
-    const status = normalize(statusRaw);
+    const status = normalize(car['Status']);
 
-    if (status !== 'ACTIVE' && status !== 'نشط') {
-        alertSound.play();
+    if (status !== 'ACTIVE') {
+        if (soundEnabled) {
+            alertSound.currentTime = 0;
+            alertSound.play();
+        }
         return `<span class="status inactive">⛔ غير نشط</span>`;
     }
 
