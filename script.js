@@ -30,11 +30,12 @@ fetch('تحديث بيانات الشركات (1).csv')
         }
     });
 
-// الحالة + الصوت
+// تحديد الحالة (صارمة)
 function getStatus(car) {
-    const status = normalize(car['Status']);
+    const statusRaw = car['Status'] || '';
+    const status = normalize(statusRaw);
 
-    if (status === 'INACTIVE' || status === 'غير نشط') {
+    if (status !== 'ACTIVE' && status !== 'نشط') {
         alertSound.play();
         return `<span class="status inactive">⛔ غير نشط</span>`;
     }
