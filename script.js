@@ -1,14 +1,17 @@
 let carsData = [];
 
-// تنظيف النص (إزالة المسافات وتحويله لحروف كبيرة)
+// صوت التنبيه
+const alertSound = new Audio('alert.mp3');
+
+// تنظيف النص
 function normalize(text) {
     return text
         ?.toString()
-        .replace(/\s+/g, '')
+        .trim()
         .toUpperCase();
 }
 
-// تحميل ملف CSV
+// تحميل CSV
 fetch('تحديث بيانات الشركات (1).csv')
     .then(res => res.text())
     .then(data => {
@@ -25,13 +28,21 @@ fetch('تحديث بيانات الشركات (1).csv')
                 carsData.push(obj);
             }
         }
-        console.log('CSV Loaded:', carsData.length);
-    })
-    .catch(err => {
-        console.error(err);
-        alert('فشل تحميل ملف البيانات');
     });
 
+// الحالة + الصوت
+function getStatus(car) {
+    const status = normalize(car['Status']);
+
+    if (status === 'INACTIVE' || status === 'غير نشط') {
+        alertSound.play();
+        return `<span class="status inactive">⛔ غير نشط</span>`;
+    }
+
+    return `<span class="status active">✅ نشط</span>`;
+}
+
+// البحث
 function searchCar() {
     const input = normalize(document.getElementById('plateInput').value);
     const table = document.getElementById('resultTable');
@@ -39,19 +50,18 @@ function searchCar() {
 
     tbody.innerHTML = '';
 
-    if (!input) {
-        alert('الرجاء إدخال رقم اللوحة');
+    if (!input || input.length < 2) {
+        table.style.display = 'none';
         return;
     }
 
     const results = carsData.filter(car => {
         const en = normalize(car['Car No. (English)']);
         const ar = normalize(car['Car No. (Arabic)']);
-        return en?.includes(input) || ar?.includes(input);
+        return en.includes(input) || ar.includes(input);
     });
 
     if (results.length === 0) {
-        alert('لم يتم العثور على المركبة');
         table.style.display = 'none';
         return;
     }
@@ -60,7 +70,10 @@ function searchCar() {
         const row = `
             <tr>
                 <td class="client-name">
-                    ${car['Client'] || 'غير معروف'}
+                    👤 ${car['Employee Name'] || 'غير معروف'}
+                    <div class="company-name">
+                        🏢 ${car['Client'] || 'غير معروف'}
+                    </div>
                 </td>
 
                 <td data-label="رقم اللوحة">
@@ -76,7 +89,7 @@ function searchCar() {
                 </td>
 
                 <td data-label="الحالة">
-                    ${car['Status'] || '-'}
+                    ${getStatus(car)}
                 </td>
             </tr>
         `;
