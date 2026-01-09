@@ -50,17 +50,24 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            align-items: center; /* ← الحل */
+        }
+
+        /* Wrapper حقيقي للتوسيط */
+        .search-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 18px;
         }
 
         .search-box {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 16px;
+            width: 100%;
+            max-width: 360px;
         }
 
         .search-box input {
             width: 100%;
-            max-width: 360px;
             padding: 18px;
             font-size: 18px;
             font-weight: bold;
@@ -68,6 +75,7 @@
             border: 3px solid #1f2a44;
             outline: none;
             text-align: center;
+            direction: ltr; /* ← مهم جدًا */
             box-sizing: border-box;
         }
 
@@ -152,18 +160,22 @@
     </header>
 
     <div class="container">
-        <div class="search-box">
-            <input
-                type="text"
-                id="plateInput"
-                placeholder="أدخل رقم اللوحة"
-                oninput="searchCar()"
-            >
+
+        <div class="search-wrapper">
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="plateInput"
+                    placeholder="أدخل رقم اللوحة"
+                    oninput="searchCar()"
+                >
+            </div>
         </div>
 
         <table id="resultTable" style="display:none;">
             <tbody></tbody>
         </table>
+
     </div>
 
     <div class="footer">
