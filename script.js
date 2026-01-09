@@ -8,7 +8,7 @@ function normalize(text) {
         .toUpperCase();
 }
 
-// تحميل CSV
+// تحميل ملف CSV
 fetch('تحديث بيانات الشركات (1).csv')
     .then(res => res.text())
     .then(data => {
@@ -28,7 +28,7 @@ fetch('تحديث بيانات الشركات (1).csv')
         console.log('CSV Loaded:', carsData.length);
     })
     .catch(err => {
-        console.error('CSV load error:', err);
+        console.error(err);
         alert('فشل تحميل ملف البيانات');
     });
 
@@ -59,17 +59,29 @@ function searchCar() {
     results.forEach(car => {
         const row = `
             <tr>
-                <td data-label="الشركة">${car['Client'] || '-'}</td>
+                <td class="client-name">
+                    ${car['Client'] || 'غير معروف'}
+                </td>
+
                 <td data-label="رقم اللوحة">
                     ${car['Car No. (English)'] || car['Car No. (Arabic)'] || '-'}
                 </td>
-                <td data-label="لون السيارة">${car['Car Color'] || '-'}</td>
-                <td data-label="موديل السيارة">${car['Car Model'] || '-'}</td>
-                <td data-label="الحالة">${car['Status'] || '-'}</td>
+
+                <td data-label="لون السيارة">
+                    ${car['Car Color'] || '-'}
+                </td>
+
+                <td data-label="موديل السيارة">
+                    ${car['Car Model'] || '-'}
+                </td>
+
+                <td data-label="الحالة">
+                    ${car['Status'] || '-'}
+                </td>
             </tr>
         `;
         tbody.innerHTML += row;
     });
 
-    table.style.display = 'table';
+    table.style.display = 'block';
 }
