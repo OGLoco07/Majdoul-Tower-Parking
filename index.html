@@ -10,7 +10,6 @@
             margin: 0;
             font-family: "Segoe UI", Tahoma, Arial;
             background: #0f172a;
-            color: #111;
             display: flex;
             justify-content: center;
             min-height: 100vh;
@@ -20,11 +19,13 @@
             width: 100%;
             max-width: 420px;
             background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            flex-direction: column;
         }
 
         header {
             background: #fff;
-            padding: 14px;
+            padding: 16px;
             text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
@@ -43,24 +44,35 @@
         .container {
             background: white;
             margin: 16px;
-            padding: 18px;
+            padding: 20px;
             border-radius: 18px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
         }
 
         .search-box input {
             width: 100%;
-            padding: 16px;
+            max-width: 360px;
+            padding: 18px;
             font-size: 18px;
-            border-radius: 14px;
-            border: 2px solid #1f2a44;
+            font-weight: bold;
+            border-radius: 16px;
+            border: 3px solid #1f2a44;
             outline: none;
             text-align: center;
+            box-sizing: border-box;
         }
 
         table {
             width: 100%;
-            margin-top: 18px;
             border-collapse: collapse;
         }
 
@@ -121,11 +133,11 @@
             color: #991b1b;
         }
 
-        .kiosk-hint {
+        .footer {
             text-align: center;
-            font-size: 12px;
+            font-size: 13px;
             color: #444;
-            margin-top: 10px;
+            padding: 12px 0 6px;
         }
     </style>
 </head>
@@ -152,10 +164,10 @@
         <table id="resultTable" style="display:none;">
             <tbody></tbody>
         </table>
+    </div>
 
-        <div class="kiosk-hint">
-            🔒 Linkexpert خبير الربط – البحث تلقائي
-        </div>
+    <div class="footer">
+        خبير الربط – Link Expert
     </div>
 
 </div>
