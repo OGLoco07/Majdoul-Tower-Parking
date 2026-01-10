@@ -1,166 +1,166 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>مواقف برج مجدول</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>مواقف برج مجدول</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * { box-sizing: border-box; }
+<style>
+*{box-sizing:border-box}
 
-        body {
-            font-family: "Segoe UI", Tahoma, Arial;
-            background: #f5f7fa;
-            margin: 0;
-            transition: background 0.3s, color 0.3s;
-        }
+body{
+    margin:0;
+    font-family:Tahoma, Arial;
+    background:#f4f6f9;
+    transition:.3s;
+}
 
-        body.dark {
-            background: #121212;
-            color: #e0e0e0;
-        }
+body.dark{
+    background:#111;
+    color:#eee;
+}
 
-        header {
-            background: #fff;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+header{
+    background:#fff;
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 2px 6px rgba(0,0,0,.1);
+    font-weight:bold;
+}
 
-        body.dark header {
-            background: #1e1e1e;
-        }
+body.dark header{background:#1c1c1c}
 
-        header img { height: 40px; }
+header h1{
+    margin:0;
+    font-size:20px;
+    text-align:center;
+    flex:1;
+}
 
-        header h1 {
-            margin: 0;
-            font-size: 20px;
-            text-align: center;
-            flex: 1;
-        }
+header img{height:38px}
 
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 14px;
-        }
+.container{
+    max-width:900px;
+    margin:20px auto;
+    background:#fff;
+    padding:20px;
+    border-radius:14px;
+}
 
-        body.dark .container {
-            background: #1e1e1e;
-        }
+body.dark .container{background:#1c1c1c}
 
-        .top-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
+.actions{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:15px;
+}
 
-        .top-actions button {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-        }
+.actions button{
+    padding:10px 20px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    background:#f1f1f1;
+    cursor:pointer;
+    font-weight:bold;
+}
 
-        .search-box {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
+body.dark .actions button{
+    background:#2a2a2a;
+    color:#eee;
+    border-color:#444;
+}
 
-        .search-box input {
-            width: 100%;
-            max-width: 360px;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
+.search-box{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:center;
+    margin-bottom:15px;
+}
 
-        .counter {
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
+.search-box input{
+    width:100%;
+    max-width:350px;
+    padding:14px;
+    text-align:center;
+    border-radius:10px;
+    border:1px solid #ccc;
+    font-size:16px;
+}
 
-        /* ===== جدول (شاشات كبيرة) ===== */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+.counter{
+    text-align:center;
+    font-weight:bold;
+    margin:10px 0;
+}
 
-        th, td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
+.cards{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
 
-        th {
-            background: #1f2a44;
-            color: #fff;
-        }
+.card{
+    padding:16px;
+    border-radius:14px;
+    background:#f7f7f7;
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
 
-        /* ===== كروت (جوال) ===== */
-        .cards {
-            display: none;
-            gap: 12px;
-            flex-direction: column;
-        }
+body.dark .card{background:#2a2a2a}
 
-        .card {
-            border-radius: 12px;
-            padding: 14px;
-            background: #f9f9f9;
-        }
+.card.active{border-right:8px solid #1b7f3a}
+.card.inactive{border-right:8px solid #b30000}
 
-        body.dark .card {
-            background: #2a2a2a;
-        }
+.card h3{
+    margin:0 0 6px;
+    font-size:18px;
+}
 
-        .card.active { border-right: 6px solid #1b7f3a; }
-        .card.inactive { border-right: 6px solid #b30000; }
+.card .company{
+    font-weight:bold;
+    margin-bottom:6px;
+    color:#444;
+}
 
-        .status {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-        }
+body.dark .card .company{color:#ccc}
 
-        .status.active {
-            background: #e6f7ed;
-            color: #1b7f3a;
-        }
+.card .info{
+    font-size:15px;
+    margin-bottom:8px;
+}
 
-        .status.inactive {
-            background: #fdeaea;
-            color: #b30000;
-        }
+.status{
+    display:inline-block;
+    padding:8px 18px;
+    border-radius:20px;
+    font-weight:bold;
+}
 
-        footer {
-            text-align: center;
-            padding: 15px;
-            font-size: 14px;
-            color: #777;
-        }
+.status.active{
+    background:#e6f7ed;
+    color:#1b7f3a;
+}
 
-        /* ===== Responsive ===== */
-        @media (max-width: 768px) {
-            table { display: none; }
-            .cards { display: flex; }
-        }
-    </style>
+.status.inactive{
+    background:#fdeaea;
+    color:#b30000;
+}
+
+footer{
+    text-align:center;
+    padding:15px;
+    font-weight:bold;
+    color:#666;
+}
+
+body.dark footer{color:#aaa}
+</style>
 </head>
+
 <body>
 
 <header>
@@ -171,38 +171,23 @@
 
 <div class="container">
 
-    <div class="top-actions">
-        <button onclick="clearSearch()">🧹 مسح البحث</button>
-        <button onclick="toggleDarkMode()">🌙 وضع ليلي</button>
-    </div>
+<div class="actions">
+    <button onclick="clearSearch()">مسح البحث</button>
+    <button onclick="toggleDark()">Light / Dark</button>
+</div>
 
-    <div class="search-box">
-        <input id="plateInput" placeholder="البحث برقم / حروف اللوحة" oninput="searchByPlate()">
-        <input id="nameInput" placeholder="البحث باسم الموظف" oninput="searchByName()">
-    </div>
+<div class="search-box">
+    <input id="plateInput" placeholder="البحث برقم أو حروف اللوحة" oninput="searchByPlate()">
+    <input id="nameInput" placeholder="البحث باسم الموظف" oninput="searchByName()">
+</div>
 
-    <div class="counter" id="counter"></div>
+<div class="counter" id="counter"></div>
 
-    <table id="resultTable">
-        <thead>
-            <tr>
-                <th>الموظف / الشركة</th>
-                <th>اللوحة</th>
-                <th>اللون</th>
-                <th>الموديل</th>
-                <th>الحالة</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <div class="cards" id="cards"></div>
+<div class="cards" id="cards"></div>
 
 </div>
 
-<footer>
-    خبير الربط – Link Expert
-</footer>
+<footer>خبير الربط – Link Expert</footer>
 
 <script src="script.js"></script>
 </body>
