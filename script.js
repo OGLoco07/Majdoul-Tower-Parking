@@ -1,7 +1,11 @@
-let carsData = [];
+let carsData=[];
 
-function normalizePlate(t){return t?.toString().replace(/\s+/g,'').toUpperCase();}
-function normalizeName(t){return t?.toString().trim().toUpperCase();}
+function normalizePlate(t){
+    return t?.toString().replace(/\s+/g,'').toUpperCase();
+}
+function normalizeName(t){
+    return t?.toString().trim().toUpperCase();
+}
 
 fetch('تحديث بيانات الشركات (1).csv')
 .then(r=>r.text())
@@ -18,37 +22,24 @@ fetch('تحديث بيانات الشركات (1).csv')
 });
 
 function render(results){
-    const tbody=document.querySelector('#resultTable tbody');
     const cards=document.getElementById('cards');
     const counter=document.getElementById('counter');
-    tbody.innerHTML='';
     cards.innerHTML='';
-    counter.textContent = results.length ? `عدد النتائج: ${results.length}` : '';
+    counter.textContent=results.length?`عدد النتائج: ${results.length}`:'';
 
     results.forEach(car=>{
-        const inactive = normalizeName(car['Status'])==='INACTIVE';
-
-        tbody.innerHTML+=`
-        <tr>
-            <td><b>${car['Employee Name']||'-'}</b><br>${car['Client']||'-'}</td>
-            <td>${car['Car No. (English)']||car['Car No. (Arabic)']||'-'}</td>
-            <td>${car['Car Color']||'-'}</td>
-            <td>${car['Car Model']||'-'}</td>
-            <td>
-                <span class="status ${inactive?'inactive':'active'}">
-                ${inactive?'غير نشط':'نشط'}
-                </span>
-            </td>
-        </tr>`;
+        const inactive=normalizeName(car['Status'])==='INACTIVE';
 
         cards.innerHTML+=`
         <div class="card ${inactive?'inactive':'active'}">
-            <b>${car['Employee Name']||'-'}</b><br>
-            ${car['Client']||'-'}<br>
-            🚗 ${car['Car No. (English)']||car['Car No. (Arabic)']||'-'}<br>
-            🎨 ${car['Car Color']||'-'} | ${car['Car Model']||'-'}<br>
+            <h3>${car['Employee Name']||'-'}</h3>
+            <div class="company">${car['Client']||'-'}</div>
+            <div class="info">
+                اللوحة: ${car['Car No. (English)']||car['Car No. (Arabic)']||'-'}<br>
+                اللون: ${car['Car Color']||'-'} | الموديل: ${car['Car Model']||'-'}
+            </div>
             <span class="status ${inactive?'inactive':'active'}">
-            ${inactive?'غير نشط':'نشط'}
+                ${inactive?'غير نشط':'نشط'}
             </span>
         </div>`;
     });
@@ -77,6 +68,6 @@ function clearSearch(){
     render([]);
 }
 
-function toggleDarkMode(){
+function toggleDark(){
     document.body.classList.toggle('dark');
 }
