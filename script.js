@@ -38,12 +38,9 @@ fetch('تحديث بيانات الشركات (1).csv')
 
             carsData.push(obj);
         }
-
-        console.log('تم تحميل البيانات:', carsData.length);
     })
-    .catch(err => {
-        console.error(err);
-        alert('فشل تحميل ملف CSV');
+    .catch(() => {
+        alert('فشل تحميل ملف البيانات');
     });
 
 // =====================
@@ -122,4 +119,13 @@ function renderResults(condition) {
     });
 
     table.style.display = 'table';
+}
+
+// =====================
+// مسح البحث
+// =====================
+function clearSearch() {
+    document.getElementById('plateInput').value = '';
+    document.getElementById('nameInput').value = '';
+    document.getElementById('resultTable').style.display = 'none';
 }
