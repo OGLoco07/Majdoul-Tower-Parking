@@ -6,62 +6,168 @@
 <title>مواقف برج مجدول</title>
 
 <style>
+:root {
+    --bg: #eef1f6;
+    --card: #ffffff;
+    --text: #1f2a44;
+    --input: #ffffff;
+    --border: #ddd;
+}
+
+body.dark {
+    --bg: #121212;
+    --card: #1e1e1e;
+    --text: #f1f1f1;
+    --input: #2a2a2a;
+    --border: #333;
+}
+
 body {
-    font-family: Tahoma, Arial;
-    background: #eef1f6;
     margin: 0;
+    font-family: "Segoe UI", Tahoma, Arial;
+    background: var(--bg);
+    color: var(--text);
     display: flex;
     justify-content: center;
 }
 
 .page {
-    max-width: 420px;
     width: 100%;
+    max-width: 430px;
 }
 
+/* ===== Header ===== */
 header {
-    background: white;
-    padding: 16px;
-    text-align: center;
+    background: var(--card);
+    padding: 18px 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,.1);
+    position: relative;
+    text-align: center;
 }
 
+header img {
+    height: 45px;
+}
+
+.header-logos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 20px;
+    margin: 10px 0 0;
+}
+
+.toggle {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* ===== Content ===== */
 .container {
-    background: white;
-    margin: 15px;
-    padding: 15px;
+    padding: 16px;
+}
+
+.search-box {
+    background: var(--card);
+    padding: 16px;
     border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.1);
+    margin-bottom: 16px;
 }
 
 .search-box input {
     width: 100%;
-    padding: 14px;
-    margin-bottom: 10px;
-    font-size: 16px;
-    border-radius: 12px;
-    border: 1px solid #ccc;
+    padding: 16px;
+    margin-bottom: 12px;
+    font-size: 17px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--input);
+    color: var(--text);
 }
 
+/* ===== Cards ===== */
 .card {
-    background: #f9f9f9;
-    padding: 15px;
-    border-radius: 14px;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,.08);
-    border-right: 6px solid #ccc;
+    background: var(--card);
+    padding: 18px;
+    border-radius: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    border-right: 6px solid #999;
 }
 
 .card.active { border-right-color: #28a745; }
 .card.inactive { border-right-color: #dc3545; }
 
+.card div {
+    margin-bottom: 6px;
+    font-size: 16px;
+}
+
 .status {
     text-align: center;
     font-weight: bold;
-    margin-top: 8px;
+    margin-top: 10px;
 }
 
 .status.active { color: #28a745; }
 .status.inactive { color: #dc3545; }
+
+/* ===== Footer ===== */
+footer {
+    text-align: center;
+    font-size: 13px;
+    padding: 16px 10px 22px;
+    color: #555;
+}
+
+footer strong {
+    font-weight: 700;
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+<header>
+    <div class="toggle" onclick="toggleDark()">🌙</div>
+
+    <div class="header-logos">
+        <img src="Majdoul.png" alt="Majdoul Tower">
+        <img src="linkexpert.png" alt="Link Expert">
+    </div>
+
+    <h1>مواقف برج مجدول</h1>
+</header>
+
+<div class="container">
+
+    <div class="search-box">
+        <input id="plateInput" placeholder="🔎 البحث برقم اللوحة">
+        <input id="employeeInput" placeholder="👤 البحث باسم الموظف">
+    </div>
+
+    <div id="results"></div>
+
+</div>
+
+<footer>
+    الموقع: برج مجدول <br>
+    الشركة المشغلة للمرافق: <strong>خبير الربط - Link Expert</strong>
+</footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
 </style>
 </head>
 
