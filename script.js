@@ -18,18 +18,23 @@ function normalizeName(text) {
 }
 
 // =====================
-// تحميل CSV
+// تحميل CSV (مع تنظيف BOM)
 // =====================
 fetch('تحديث بيانات الشركات (1).csv')
     .then(res => res.text())
     .then(data => {
         const lines = data.split('\n');
-        const headers = lines[0].split(',');
+
+        // تنظيف أسماء الأعمدة (BOM + \r)
+        const headers = lines[0]
+            .replace(/\uFEFF/g, '')   // إزالة BOM
+            .replace(/\r/g, '')
+            .split(',');
 
         for (let i = 1; i < lines.length; i++) {
             if (!lines[i]) continue;
 
-            const values = lines[i].split(',');
+            const values = lines[i].replace(/\r/g, '').split(',');
             let obj = {};
 
             headers.forEach((h, index) => {
@@ -56,6 +61,11 @@ function searchByPlate() {
         document.getElementById('plateInput').value
     );
 
+    if (!input) {
+        hideTable();
+        return;
+    }
+
     renderResults(car =>
         normalizePlate(car['Car No. (English)']).includes(input) ||
         normalizePlate(car['Car No. (Arabic)']).includes(input)
@@ -72,9 +82,21 @@ function searchByName() {
         document.getElementById('nameInput').value
     );
 
+    if (!input) {
+        hideTable();
+        return;
+    }
+
     renderResults(car =>
         normalizeName(car['Employee Name']).includes(input)
     );
+}
+
+// =====================
+// إخفاء الجدول
+// =====================
+function hideTable() {
+    document.getElementById('resultTable').style.display = 'none';
 }
 
 // =====================
@@ -84,11 +106,6 @@ function renderResults(condition) {
     const table = document.getElementById('resultTable');
     const tbody = table.querySelector('tbody');
     tbody.innerHTML = '';
-
-    if (!condition) {
-        table.style.display = 'none';
-        return;
-    }
 
     const results = carsData.filter(condition);
 
@@ -111,9 +128,9 @@ function renderResults(condition) {
                 <td>${car['Car Color'] || '-'}</td>
                 <td>${car['Car Model'] || '-'}</td>
                 <td>
-                    ${inactive
-                        ? '<span class="status inactive">⛔ غير نشط</span>'
-                        : '<span class="status active">✅ نشط</span>'}
+                    <span class="status ${inactive ? 'inactive' : 'active'}">
+                        ${inactive ? 'غير نشط' : 'نشط'}
+                    </span>
                 </td>
             </tr>
         `;
