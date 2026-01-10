@@ -1,30 +1,19 @@
 let carsData = [];
+let lastAlertKey = null;
 
-// الصوت
-const alertSound = new Audio('alert.mp3');
-let soundEnabled = false;
-
-// تفعيل الصوت بعد أول تفاعل حقيقي
-document.addEventListener('click', enableSound, { once: true });
-document.addEventListener('keydown', enableSound, { once: true });
-
-function enableSound() {
-    alertSound.play().then(() => {
-        alertSound.pause();
-        alertSound.currentTime = 0;
-        soundEnabled = true;
-    }).catch(() => {});
-}
-
+// =====================
 // تنظيف النص
+// =====================
 function normalize(text) {
     return text
         ?.toString()
-        .trim()
+        .replace(/\s+/g, '')
         .toUpperCase();
 }
 
-// تحميل CSV
+// =====================
+// تحميل ملف CSV
+// =====================
 fetch('تحديث بيانات الشركات (1).csv')
     .then(res => res.text())
     .then(data => {
@@ -33,48 +22,72 @@ fetch('تحديث بيانات الشركات (1).csv')
 
         for (let i = 1; i < rows.length; i++) {
             const cols = rows[i].split(',');
-            if (cols.length >= headers.length) {
-                let obj = {};
-                headers.forEach((h, index) => {
-                    obj[h.trim()] = cols[index]?.trim();
-                });
-                carsData.push(obj);
-            }
+            if (cols.length < headers.length) continue;
+
+            let obj = {};
+            headers.forEach((h, index) => {
+                obj[h.trim()] = cols[index]?.trim();
+            });
+
+            carsData.push(obj);
         }
+
+        console.log('CSV Loaded:', carsData.length);
+    })
+    .catch(err => {
+        console.error(err);
+        alert('فشل تحميل ملف البيانات');
     });
 
-// الحالة (صارمة)
-function getStatus(car) {
+// =====================
+// تحديد حالة المركبة
+// =====================
+function isInactive(car) {
     const status = normalize(car['Status']);
-
-    if (status !== 'ACTIVE') {
-        if (soundEnabled) {
-            alertSound.currentTime = 0;
-            alertSound.play();
-        }
-        return `<span class="status inactive">⛔ غير نشط</span>`;
-    }
-
-    return `<span class="status active">✅ نشط</span>`;
+    return status === 'INACTIVE' || status === 'غيرنشط';
 }
 
-// البحث
+// =====================
+// تنبيه صوتي + اهتزاز
+// =====================
+function alertInactive(key) {
+    if (lastAlertKey === key) return;
+    lastAlertKey = key;
+
+    const audio = new Audio('alert.mp3'); // ضع ملف صوتي في نفس المجلد
+    audio.play().catch(() => {});
+
+    if (navigator.vibrate) {
+        navigator.vibrate([300, 200, 300]);
+    }
+}
+
+// =====================
+// البحث (اسم / لوحة)
+// =====================
 function searchCar() {
-    const input = normalize(document.getElementById('plateInput').value);
+    const inputRaw = document.getElementById('plateInput').value;
+    const input = normalize(inputRaw);
+
     const table = document.getElementById('resultTable');
     const tbody = table.querySelector('tbody');
-
     tbody.innerHTML = '';
 
-    if (!input || input.length < 2) {
+    if (!input) {
         table.style.display = 'none';
         return;
     }
 
     const results = carsData.filter(car => {
-        const en = normalize(car['Car No. (English)']);
-        const ar = normalize(car['Car No. (Arabic)']);
-        return en.includes(input) || ar.includes(input);
+        const plateEn = normalize(car['Car No. (English)']);
+        const plateAr = normalize(car['Car No. (Arabic)']);
+        const employee = normalize(car['Employee Name']);
+
+        return (
+            plateEn.includes(input) ||
+            plateAr.includes(input) ||
+            employee.includes(input)
+        );
     });
 
     if (results.length === 0) {
@@ -83,32 +96,30 @@ function searchCar() {
     }
 
     results.forEach(car => {
+        const inactive = isInactive(car);
+        const key = car['Car No. (English)'] || car['Car No. (Arabic)'] || car['Employee Name'];
+
+        if (inactive) {
+            alertInactive(key);
+        }
+
         const row = `
-            <tr>
-                <td class="client-name">
-                    👤 ${car['Employee Name'] || 'غير معروف'}
-                    <div class="company-name">
-                        🏢 ${car['Client'] || 'غير معروف'}
-                    </div>
+            <tr class="${inactive ? 'row-inactive' : 'row-active'}">
+                <td>
+                    <strong>${car['Employee Name'] || '-'}</strong><br>
+                    <span>${car['Client'] || '-'}</span>
                 </td>
-
-                <td data-label="رقم اللوحة">
-                    ${car['Car No. (English)'] || car['Car No. (Arabic)'] || '-'}
-                </td>
-
-                <td data-label="لون السيارة">
-                    ${car['Car Color'] || '-'}
-                </td>
-
-                <td data-label="موديل السيارة">
-                    ${car['Car Model'] || '-'}
-                </td>
-
-                <td data-label="الحالة">
-                    ${getStatus(car)}
+                <td>${car['Car No. (English)'] || car['Car No. (Arabic)'] || '-'}</td>
+                <td>${car['Car Color'] || '-'}</td>
+                <td>${car['Car Model'] || '-'}</td>
+                <td>
+                    ${inactive
+                        ? '<span class="status inactive">⛔ غير نشط</span>'
+                        : '<span class="status active">✅ نشط</span>'}
                 </td>
             </tr>
         `;
+
         tbody.innerHTML += row;
     });
 
