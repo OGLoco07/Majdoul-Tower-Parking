@@ -6,20 +6,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+*{box-sizing:border-box}
+
 body{
     margin:0;
     font-family:Tahoma, Arial;
     background:#f4f6f9;
+    transition:.3s;
+}
+
+body.dark{
+    background:#111;
+    color:#eee;
 }
 
 header{
-    background:#fff;
+    background:#ffffff;
     padding:14px 20px;
     display:flex;
     align-items:center;
     justify-content:space-between;
     box-shadow:0 2px 6px rgba(0,0,0,.1);
     font-weight:bold;
+}
+
+body.dark header{
+    background:#1c1c1c;
 }
 
 header h1{
@@ -32,87 +44,115 @@ header h1{
 header img{height:38px}
 
 .container{
-    max-width:900px;
+    max-width:1000px;
     margin:20px auto;
     background:#fff;
     padding:20px;
-    border-radius:14px;
+    border-radius:12px;
+}
+
+body.dark .container{
+    background:#1c1c1c;
+}
+
+.actions{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.actions button{
+    padding:8px 18px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    background:#f1f1f1;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+body.dark .actions button{
+    background:#2a2a2a;
+    color:#eee;
+    border-color:#444;
 }
 
 .search-box{
     display:flex;
-    flex-direction:column;
-    gap:12px;
-    align-items:center;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
     margin-bottom:15px;
 }
 
 .search-box input{
     width:100%;
-    max-width:350px;
-    padding:14px;
+    max-width:320px;
+    padding:12px;
     text-align:center;
-    border-radius:10px;
+    border-radius:6px;
     border:1px solid #ccc;
-    font-size:16px;
+    font-size:15px;
 }
 
 .counter{
     text-align:center;
     font-weight:bold;
-    margin:10px 0;
+    margin-bottom:10px;
 }
 
-.cards{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
+table{
+    width:100%;
+    border-collapse:collapse;
 }
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+
+th{
+    background:#1f2a44;
+    color:#fff;
+}
+
+.cards{display:none;flex-direction:column;gap:12px}
 
 .card{
-    padding:16px;
-    border-radius:14px;
+    padding:14px;
+    border-radius:10px;
     background:#f7f7f7;
-    box-shadow:0 4px 10px rgba(0,0,0,.08);
-    border-right:8px solid #1b7f3a;
 }
 
-.card.inactive{
-    border-right-color:#b30000;
-}
+body.dark .card{background:#2a2a2a}
 
-.card h3{
-    margin:0 0 6px;
-    font-size:18px;
-}
-
-.company{
-    font-weight:bold;
-    margin-bottom:6px;
-}
+.card.active{border-right:6px solid #1b7f3a}
+.card.inactive{border-right:6px solid #b30000}
 
 .status{
     display:inline-block;
-    padding:8px 18px;
+    padding:6px 14px;
     border-radius:20px;
     font-weight:bold;
+    margin-top:8px;
 }
 
-.status.active{
-    background:#e6f7ed;
-    color:#1b7f3a;
-}
-
-.status.inactive{
-    background:#fdeaea;
-    color:#b30000;
-}
+.status.active{background:#e6f7ed;color:#1b7f3a}
+.status.inactive{background:#fdeaea;color:#b30000}
 
 footer{
     text-align:center;
     padding:15px;
     font-weight:bold;
     color:#666;
+}
+
+body.dark footer{color:#aaa}
+
+@media(max-width:768px){
+    table{display:none}
+    .cards{display:flex}
 }
 </style>
 </head>
@@ -127,84 +167,37 @@ footer{
 
 <div class="container">
 
+<div class="actions">
+    <button onclick="clearSearch()">مسح البحث</button>
+    <button onclick="toggleDark()">Light / Dark</button>
+</div>
+
 <div class="search-box">
-    <input id="plateInput" placeholder="البحث برقم أو حروف اللوحة">
-    <input id="nameInput" placeholder="البحث باسم الموظف">
+    <input id="plateInput" placeholder="البحث برقم أو حروف اللوحة" oninput="searchByPlate()">
+    <input id="nameInput" placeholder="البحث باسم الموظف" oninput="searchByName()">
 </div>
 
 <div class="counter" id="counter"></div>
+
+<table id="resultTable">
+<thead>
+<tr>
+<th>الموظف / الشركة</th>
+<th>اللوحة</th>
+<th>اللون</th>
+<th>الموديل</th>
+<th>الحالة</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
 <div class="cards" id="cards"></div>
 
 </div>
 
 <footer>خبير الربط – Link Expert</footer>
 
-<script>
-let carsData = [];
-
-function normalizePlate(t){
-    return t?.toString().replace(/\s+/g,'').toUpperCase();
-}
-function normalizeName(t){
-    return t?.toString().trim().toUpperCase();
-}
-
-fetch('تحديث بيانات الشركات (1).csv')
-.then(r=>r.text())
-.then(data=>{
-    const lines=data.split('\n');
-    const headers=lines[0].split(',');
-    for(let i=1;i<lines.length;i++){
-        if(!lines[i]) continue;
-        const v=lines[i].split(',');
-        let o={};
-        headers.forEach((h,j)=>o[h.trim()]=v[j]?.trim());
-        carsData.push(o);
-    }
-});
-
-const plateInput=document.getElementById('plateInput');
-const nameInput=document.getElementById('nameInput');
-const cards=document.getElementById('cards');
-const counter=document.getElementById('counter');
-
-plateInput.addEventListener('input', ()=>{
-    nameInput.value='';
-    const v=normalizePlate(plateInput.value);
-    render(carsData.filter(c =>
-        normalizePlate(c['Car No. (English)']).includes(v) ||
-        normalizePlate(c['Car No. (Arabic)']).includes(v)
-    ));
-});
-
-nameInput.addEventListener('input', ()=>{
-    plateInput.value='';
-    const v=normalizeName(nameInput.value);
-    render(carsData.filter(c =>
-        normalizeName(c['Employee Name']).includes(v)
-    ));
-});
-
-function render(results){
-    cards.innerHTML='';
-    counter.textContent=results.length?`عدد النتائج: ${results.length}`:'';
-
-    results.forEach(car=>{
-        const inactive=normalizeName(car['Status'])==='INACTIVE';
-
-        cards.innerHTML+=`
-        <div class="card ${inactive?'inactive':''}">
-            <h3>${car['Employee Name']||'-'}</h3>
-            <div class="company">${car['Client']||'-'}</div>
-            اللوحة: ${car['Car No. (English)']||car['Car No. (Arabic)']||'-'}<br>
-            اللون: ${car['Car Color']||'-'} | الموديل: ${car['Car Model']||'-'}<br><br>
-            <span class="status ${inactive?'inactive':'active'}">
-                ${inactive?'غير نشط':'نشط'}
-            </span>
-        </div>`;
-    });
-}
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
