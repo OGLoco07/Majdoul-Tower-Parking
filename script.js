@@ -1,8 +1,7 @@
 let carsData = [];
-let lastAlertKey = null;
 
 // =====================
-// تنظيف النص
+// أدوات تنظيف
 // =====================
 function normalizePlate(text) {
     return text
@@ -24,51 +23,74 @@ function normalizeName(text) {
 fetch('تحديث بيانات الشركات (1).csv')
     .then(res => res.text())
     .then(data => {
-        const rows = data.split('\n');
-        const headers = rows[0].split(',');
+        const lines = data.split('\n');
+        const headers = lines[0].split(',');
 
-        for (let i = 1; i < rows.length; i++) {
-            const cols = rows[i].split(',');
-            if (cols.length < headers.length) continue;
+        for (let i = 1; i < lines.length; i++) {
+            if (!lines[i]) continue;
 
+            const values = lines[i].split(',');
             let obj = {};
+
             headers.forEach((h, index) => {
-                obj[h.trim()] = cols[index]?.trim();
+                obj[h.trim()] = values[index]?.trim();
             });
 
             carsData.push(obj);
         }
+
+        console.log('تم تحميل البيانات:', carsData.length);
+    })
+    .catch(err => {
+        console.error(err);
+        alert('فشل تحميل ملف CSV');
     });
 
 // =====================
-// حالة المركبة
+// البحث باللوحة
 // =====================
-function isInactive(car) {
-    return normalizeName(car['Status']) === 'INACTIVE';
+function searchByPlate() {
+    document.getElementById('nameInput').value = '';
+
+    const input = normalizePlate(
+        document.getElementById('plateInput').value
+    );
+
+    renderResults(car =>
+        normalizePlate(car['Car No. (English)']).includes(input) ||
+        normalizePlate(car['Car No. (Arabic)']).includes(input)
+    );
 }
 
 // =====================
-// تنبيه غير نشط
+// البحث بالاسم
 // =====================
-function triggerAlert(key) {
-    if (lastAlertKey === key) return;
-    lastAlertKey = key;
+function searchByName() {
+    document.getElementById('plateInput').value = '';
 
-    const audio = new Audio('alert.mp3');
-    audio.play().catch(() => {});
+    const input = normalizeName(
+        document.getElementById('nameInput').value
+    );
 
-    if (navigator.vibrate) {
-        navigator.vibrate([300, 200, 300]);
-    }
+    renderResults(car =>
+        normalizeName(car['Employee Name']).includes(input)
+    );
 }
 
 // =====================
 // عرض النتائج
 // =====================
-function renderResults(results) {
+function renderResults(condition) {
     const table = document.getElementById('resultTable');
     const tbody = table.querySelector('tbody');
     tbody.innerHTML = '';
+
+    if (!condition) {
+        table.style.display = 'none';
+        return;
+    }
+
+    const results = carsData.filter(condition);
 
     if (results.length === 0) {
         table.style.display = 'none';
@@ -76,16 +98,14 @@ function renderResults(results) {
     }
 
     results.forEach(car => {
-        const inactive = isInactive(car);
-        const key = car['Car No. (English)'] || car['Employee Name'];
+        const status = normalizeName(car['Status']);
+        const inactive = status === 'INACTIVE';
 
-        if (inactive) triggerAlert(key);
-
-        tbody.innerHTML += `
+        const row = `
             <tr class="${inactive ? 'row-inactive' : 'row-active'}">
                 <td>
                     <strong>${car['Employee Name'] || '-'}</strong><br>
-                    <span>${car['Client'] || '-'}</span>
+                    <small>${car['Client'] || '-'}</small>
                 </td>
                 <td>${car['Car No. (English)'] || car['Car No. (Arabic)'] || '-'}</td>
                 <td>${car['Car Color'] || '-'}</td>
@@ -97,42 +117,9 @@ function renderResults(results) {
                 </td>
             </tr>
         `;
+
+        tbody.innerHTML += row;
     });
 
-    table.style.display = 'block';
-}
-
-// =====================
-// البحث باللوحة
-// =====================
-function searchByPlate() {
-    document.getElementById('nameInput').value = '';
-
-    const input = normalizePlate(document.getElementById('plateInput').value);
-    if (!input) return renderResults([]);
-
-    const results = carsData.filter(car => {
-        return (
-            normalizePlate(car['Car No. (English)']).includes(input) ||
-            normalizePlate(car['Car No. (Arabic)']).includes(input)
-        );
-    });
-
-    renderResults(results);
-}
-
-// =====================
-// البحث بالاسم
-// =====================
-function searchByName() {
-    document.getElementById('plateInput').value = '';
-
-    const input = normalizeName(document.getElementById('nameInput').value);
-    if (!input) return renderResults([]);
-
-    const results = carsData.filter(car =>
-        normalizeName(car['Employee Name']).includes(input)
-    );
-
-    renderResults(results);
+    table.style.display = 'table';
 }
