@@ -1,4 +1,4 @@
-let carsData=[];
+let carsData = [];
 
 function normalizePlate(t){return t?.toString().replace(/\s+/g,'').toUpperCase();}
 function normalizeName(t){return t?.toString().trim().toUpperCase();}
@@ -23,10 +23,10 @@ function render(results){
     const counter=document.getElementById('counter');
     tbody.innerHTML='';
     cards.innerHTML='';
-    counter.textContent=results.length?`عدد النتائج: ${results.length}`:'';
+    counter.textContent = results.length ? `عدد النتائج: ${results.length}` : '';
 
     results.forEach(car=>{
-        const inactive=normalizeName(car['Status'])==='INACTIVE';
+        const inactive = normalizeName(car['Status'])==='INACTIVE';
 
         tbody.innerHTML+=`
         <tr>
@@ -77,6 +77,6 @@ function clearSearch(){
     render([]);
 }
 
-function toggleDark(){
+function toggleDarkMode(){
     document.body.classList.toggle('dark');
 }
