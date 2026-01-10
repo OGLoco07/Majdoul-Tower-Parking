@@ -1,162 +1,83 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مواقف برج مجدول</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مواقف برج مجدول</title>
 
-    <style>
-        body {
-            font-family: "Segoe UI", Tahoma, Arial;
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-        }
+<style>
+body {
+    font-family: Tahoma, Arial;
+    background: #eef1f6;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
 
-        .page {
-            width: 100%;
-            max-width: 420px;
-            margin: 0 auto;
-        }
+.page {
+    max-width: 420px;
+    width: 100%;
+}
 
-        header {
-            background: white;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+header {
+    background: white;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,.1);
+}
 
-        header img {
-            height: 55px;
-        }
+.container {
+    background: white;
+    margin: 15px;
+    padding: 15px;
+    border-radius: 16px;
+}
 
-        header h1 {
-            margin: 5px 0;
-            font-size: 22px;
-            color: #1f2a44;
-            text-align: center;
-        }
+.search-box input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+}
 
-        .container {
-            background: white;
-            margin: 20px 12px;
-            padding: 20px;
-            border-radius: 18px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
+.card {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.08);
+    border-right: 6px solid #ccc;
+}
 
-        .container h2 {
-            text-align: center;
-            margin-bottom: 15px;
-        }
+.card.active { border-right-color: #28a745; }
+.card.inactive { border-right-color: #dc3545; }
 
-        .search-box {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+.status {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 8px;
+}
 
-        .search-box input {
-            padding: 14px;
-            font-size: 17px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-        }
-
-        .search-box button {
-            padding: 14px;
-            font-size: 17px;
-            border-radius: 12px;
-            border: none;
-            background: #1f2a44;
-            color: white;
-            cursor: pointer;
-        }
-
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-
-        thead {
-            display: none;
-        }
-
-        tr {
-            display: block;
-            background: #f9f9f9;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        td {
-            display: block;
-            border: none;
-            padding: 6px 0;
-            font-size: 16px;
-            text-align: right;
-        }
-
-        td::before {
-            content: attr(data-label);
-            display: block;
-            font-weight: bold;
-            color: #1f2a44;
-            margin-bottom: 2px;
-        }
-
-        .client-name {
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            color: #1f2a44;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #ccc;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 13px;
-            color: #555;
-            margin: 20px 10px;
-        }
-    </style>
+.status.active { color: #28a745; }
+.status.inactive { color: #dc3545; }
+</style>
 </head>
 
 <body>
 <div class="page">
 
-    <header>
-        <img src="Majdoul.png" alt="Majdoul Tower">
-        <h1>مواقف برج مجدول</h1>
-        <img src="linkexpert.png" alt="Link Expert">
-    </header>
+<header>
+    <h2>مواقف برج مجدول</h2>
+</header>
 
-    <div class="container">
-        <h2>🔍 البحث عن المركبة</h2>
+<div class="container">
+    <input id="plateInput" placeholder="🔎 بحث برقم اللوحة">
+    <input id="employeeInput" placeholder="👤 بحث باسم الموظف">
 
-        <div class="search-box">
-            <input type="text" id="plateInput" placeholder="أدخل رقم اللوحة (حروف أو أرقام)">
-            <button onclick="searchCar()">بحث</button>
-        </div>
-
-        <table id="resultTable" style="display:none;">
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <div class="footer">
-        الموقع: برج مجدول – الشركة المشغلة للمرافق: Link Expert
-    </div>
+    <div id="results"></div>
+</div>
 
 </div>
 
