@@ -1,6 +1,6 @@
 let carsData = [];
 
-// تنظيف اللوحة
+// تنظيف النص
 function normalize(text) {
     return text
         ?.toString()
@@ -12,13 +12,17 @@ function normalize(text) {
 fetch('تحديث بيانات الشركات (1).csv')
     .then(res => res.text())
     .then(data => {
-        const rows = data.split('\n');
-        const headers = rows[0].split(',');
+
+        // 🔑 اكتشاف الفاصل تلقائيًا
+        const delimiter = data.includes(';') ? ';' : ',';
+
+        const rows = data.split(/\r?\n/);
+        const headers = rows[0].split(delimiter);
 
         for (let i = 1; i < rows.length; i++) {
-            if (!rows[i]) continue;
+            if (!rows[i].trim()) continue;
 
-            const cols = rows[i].split(',');
+            const cols = rows[i].split(delimiter);
             let obj = {};
 
             headers.forEach((h, index) => {
@@ -28,10 +32,11 @@ fetch('تحديث بيانات الشركات (1).csv')
             carsData.push(obj);
         }
 
-        console.log('CSV Loaded:', carsData.length);
+        console.log('تم تحميل البيانات:', carsData.length);
+        console.log('أول سجل:', carsData[0]); // للمراجعة
     })
-    .catch(() => alert('فشل تحميل ملف البيانات'));
-    
+    .catch(() => alert('فشل تحميل ملف CSV'));
+
 // البحث
 function searchCar() {
     const input = normalize(
@@ -47,12 +52,10 @@ function searchCar() {
         return;
     }
 
-    const results = carsData.filter(car => {
-        return (
-            normalize(car['Car No. (English)']).includes(input) ||
-            normalize(car['Car No. (Arabic)']).includes(input)
-        );
-    });
+    const results = carsData.filter(car =>
+        normalize(car['Car No. (English)']).includes(input) ||
+        normalize(car['Car No. (Arabic)']).includes(input)
+    );
 
     if (results.length === 0) {
         table.style.display = 'none';
