@@ -1,180 +1,107 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>مواقف برج مجدول</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>مواقف برج مجدول</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+}
 
-        body {
-            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-            margin: 0;
-            padding: 0;
-        }
+header {
+    background: white;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
 
-        header {
-            background: white;
-            padding: 15px 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
+header img { height: 45px; }
 
-        header img {
-            height: 50px;
-        }
+header h1 {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+}
 
-        header h1 {
-            margin: 0;
-            font-size: 22px;
-            color: #1f2a44;
-            text-align: center;
-            flex: 1;
-        }
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
 
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            background: white;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
+input {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-align: center;
+}
 
-        .search-box {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        .search-box input {
-            width: 100%;
-            max-width: 400px;
-            padding: 14px;
-            font-size: 16px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+th {
+    background: #1f2a44;
+    color: white;
+}
 
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-            font-size: 15px;
-        }
-
-        th {
-            background: #1f2a44;
-            color: white;
-        }
-
-        .status {
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-            display: inline-block;
-        }
-
-        .status.active {
-            background: #e6f7ed;
-            color: #1b7f3a;
-        }
-
-        .status.inactive {
-            background: #fdeaea;
-            color: #b30000;
-        }
-
-        .row-active {
-            background: #f8fff9;
-        }
-
-        .row-inactive {
-            background: #fff5f5;
-        }
-
-        footer {
-            text-align: center;
-            padding: 15px;
-            font-size: 14px;
-            color: #555;
-        }
-
-        /* 📱 للجوال */
-        @media (max-width: 600px) {
-            header img {
-                height: 40px;
-            }
-
-            header h1 {
-                font-size: 18px;
-            }
-
-            th, td {
-                font-size: 14px;
-                padding: 10px;
-            }
-        }
-    </style>
+footer {
+    text-align: center;
+    padding: 15px;
+    font-weight: bold;
+}
+</style>
 </head>
+
 <body>
 
 <header>
-    <img src="Majdoul.png" alt="Majdoul Tower">
+    <img src="Majdoul.png">
     <h1>مواقف برج مجدول</h1>
-    <img src="linkexpert.png" alt="Link Expert">
+    <img src="linkexpert.png">
 </header>
 
 <div class="container">
+    <input
+        id="plateInput"
+        placeholder="ابحث برقم أو حروف اللوحة"
+        oninput="searchCar()"
+    >
 
-    <div class="search-box">
-        <input
-            type="text"
-            id="plateInput"
-            placeholder="🔢 البحث برقم / حروف اللوحة"
-            oninput="searchByPlate()"
-        >
-
-        <input
-            type="text"
-            id="nameInput"
-            placeholder="👤 البحث باسم الموظف"
-            oninput="searchByName()"
-        >
-    </div>
-
-    <table id="resultTable" style="display:none;">
+    <table id="resultTable" style="display:none">
         <thead>
             <tr>
-                <th>الموظف / الشركة</th>
-                <th>رقم اللوحة</th>
-                <th>لون السيارة</th>
-                <th>موديل السيارة</th>
+                <th>الموظف</th>
+                <th>الشركة</th>
+                <th>اللوحة</th>
+                <th>اللون</th>
+                <th>الموديل</th>
                 <th>الحالة</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
-
 </div>
 
-<footer>
-   <b>خبير الربط – Link Expert</b>
-</footer>
+<footer>خبير الربط – Link Expert</footer>
 
 <script src="script.js"></script>
 </body>
