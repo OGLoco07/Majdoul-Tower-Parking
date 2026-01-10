@@ -2,81 +2,67 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مواقف برج مجدول</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Tahoma, Arial;
-            background: #0f172a;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
+        * {
+            box-sizing: border-box;
         }
 
-        .page {
-            width: 100%;
-            max-width: 420px;
+        body {
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
             background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-            display: flex;
-            flex-direction: column;
+            margin: 0;
+            padding: 0;
         }
 
         header {
-            background: #fff;
-            padding: 16px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            background: white;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         header img {
-            height: 52px;
-            margin: 4px 0;
+            height: 50px;
         }
 
         header h1 {
-            margin: 6px 0;
+            margin: 0;
             font-size: 22px;
             color: #1f2a44;
+            text-align: center;
+            flex: 1;
         }
 
         .container {
+            max-width: 900px;
+            margin: 30px auto;
             background: white;
-            margin: 16px;
-            padding: 20px;
-            border-radius: 18px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* ← الحل */
-        }
-
-        /* Wrapper حقيقي للتوسيط */
-        .search-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin-bottom: 18px;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .search-box {
-            width: 100%;
-            max-width: 360px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
         }
 
         .search-box input {
             width: 100%;
-            padding: 18px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 16px;
-            border: 3px solid #1f2a44;
-            outline: none;
+            max-width: 400px;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
             text-align: center;
-            direction: ltr; /* ← مهم جدًا */
-            box-sizing: border-box;
         }
 
         table {
@@ -84,224 +70,111 @@
             border-collapse: collapse;
         }
 
-        tr {
-            display: block;
-            background: #f9f9f9;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        td {
-            display: block;
-            padding: 6px 0;
-            font-size: 16px;
-        }
-
-        td::before {
-            content: attr(data-label);
-            font-weight: bold;
-            color: #1f2a44;
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .client-name {
+        th, td {
+            padding: 12px;
             text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            color: #1f2a44;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #ccc;
+            border-bottom: 1px solid #ddd;
+            font-size: 15px;
         }
 
-        .company-name {
-            font-size: 14px;
-            color: #555;
-            margin-top: 4px;
+        th {
+            background: #1f2a44;
+            color: white;
         }
 
         .status {
+            padding: 6px 14px;
+            border-radius: 20px;
             font-weight: bold;
-            padding: 8px 18px;
-            border-radius: 22px;
             display: inline-block;
-            font-size: 16px;
         }
 
         .status.active {
-            background: #dcfce7;
-            color: #166534;
+            background: #e6f7ed;
+            color: #1b7f3a;
         }
 
         .status.inactive {
-            background: #fee2e2;
-            color: #991b1b;
+            background: #fdeaea;
+            color: #b30000;
         }
 
-        .footer {
+        .row-active {
+            background: #f8fff9;
+        }
+
+        .row-inactive {
+            background: #fff5f5;
+        }
+
+        footer {
             text-align: center;
-            font-size: 13px;
-            color: #444;
-            padding: 12px 0 6px;
+            padding: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* 📱 للجوال */
+        @media (max-width: 600px) {
+            header img {
+                height: 40px;
+            }
+
+            header h1 {
+                font-size: 18px;
+            }
+
+            th, td {
+                font-size: 14px;
+                padding: 10px;
+            }
         }
     </style>
 </head>
-
 <body>
-<div class="page">
 
-    <header>
-        <img src="Majdoul.png" alt="Majdoul">
-        <h1>مواقف برج مجدول</h1>
-        <img src="linkexpert.png" alt="Link Expert">
-    </header>
+<header>
+    <img src="Majdoul.png" alt="Majdoul Tower">
+    <h1>مواقف برج مجدول</h1>
+    <img src="linkexpert.png" alt="Link Expert">
+</header>
 
-    <div class="container">
+<div class="container">
 
-        <div class="search-wrapper">
-       let carsData = [];
-let lastAlertKey = null;
+    <div class="search-box">
+        <input
+            type="text"
+            id="plateInput"
+            placeholder="🔢 البحث برقم / حروف اللوحة"
+            oninput="searchByPlate()"
+        >
 
-// =====================
-// تنظيف النص
-// =====================
-function normalize(text) {
-    return text
-        ?.toString()
-        .replace(/\s+/g, '')
-        .toUpperCase();
-}
+        <input
+            type="text"
+            id="nameInput"
+            placeholder="👤 البحث باسم الموظف"
+            oninput="searchByName()"
+        >
+    </div>
 
-// =====================
-// تحميل ملف CSV
-// =====================
-fetch('تحديث بيانات الشركات (1).csv')
-    .then(res => res.text())
-    .then(data => {
-        const rows = data.split('\n');
-        const headers = rows[0].split(',');
-
-        for (let i = 1; i < rows.length; i++) {
-            const cols = rows[i].split(',');
-            if (cols.length < headers.length) continue;
-
-            let obj = {};
-            headers.forEach((h, index) => {
-                obj[h.trim()] = cols[index]?.trim();
-            });
-
-            carsData.push(obj);
-        }
-
-        console.log('CSV Loaded:', carsData.length);
-    })
-    .catch(err => {
-        console.error(err);
-        alert('فشل تحميل ملف البيانات');
-    });
-
-// =====================
-// تحديد حالة المركبة
-// =====================
-function isInactive(car) {
-    const status = normalize(car['Status']);
-    return status === 'INACTIVE' || status === 'غيرنشط';
-}
-
-// =====================
-// تنبيه صوتي + اهتزاز
-// =====================
-function alertInactive(key) {
-    if (lastAlertKey === key) return;
-    lastAlertKey = key;
-
-    const audio = new Audio('alert.mp3'); // ضع ملف صوتي في نفس المجلد
-    audio.play().catch(() => {});
-
-    if (navigator.vibrate) {
-        navigator.vibrate([300, 200, 300]);
-    }
-}
-
-// =====================
-// البحث (اسم / لوحة)
-// =====================
-function searchCar() {
-    const inputRaw = document.getElementById('plateInput').value;
-    const input = normalize(inputRaw);
-
-    const table = document.getElementById('resultTable');
-    const tbody = table.querySelector('tbody');
-    tbody.innerHTML = '';
-
-    if (!input) {
-        table.style.display = 'none';
-        return;
-    }
-
-    const results = carsData.filter(car => {
-        const plateEn = normalize(car['Car No. (English)']);
-        const plateAr = normalize(car['Car No. (Arabic)']);
-        const employee = normalize(car['Employee Name']);
-
-        return (
-            plateEn.includes(input) ||
-            plateAr.includes(input) ||
-            employee.includes(input)
-        );
-    });
-
-    if (results.length === 0) {
-        table.style.display = 'none';
-        return;
-    }
-
-    results.forEach(car => {
-        const inactive = isInactive(car);
-        const key = car['Car No. (English)'] || car['Car No. (Arabic)'] || car['Employee Name'];
-
-        if (inactive) {
-            alertInactive(key);
-        }
-
-        const row = `
-            <tr class="${inactive ? 'row-inactive' : 'row-active'}">
-                <td>
-                    <strong>${car['Employee Name'] || '-'}</strong><br>
-                    <span>${car['Client'] || '-'}</span>
-                </td>
-                <td>${car['Car No. (English)'] || car['Car No. (Arabic)'] || '-'}</td>
-                <td>${car['Car Color'] || '-'}</td>
-                <td>${car['Car Model'] || '-'}</td>
-                <td>
-                    ${inactive
-                        ? '<span class="status inactive">⛔ غير نشط</span>'
-                        : '<span class="status active">✅ نشط</span>'}
-                </td>
+    <table id="resultTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>الموظف / الشركة</th>
+                <th>رقم اللوحة</th>
+                <th>لون السيارة</th>
+                <th>موديل السيارة</th>
+                <th>الحالة</th>
             </tr>
-        `;
-
-        tbody.innerHTML += row;
-    });
-
-    table.style.display = 'block';
-}
-
-
-        <table id="resultTable" style="display:none;">
-            <tbody></tbody>
-        </table>
-
-    </div>
-
-    <div class="footer">
-        خبير الربط – Link Expert
-    </div>
+        </thead>
+        <tbody></tbody>
+    </table>
 
 </div>
+
+<footer>
+    خبير الربط – Link Expert
+</footer>
 
 <script src="script.js"></script>
 </body>
