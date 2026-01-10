@@ -1,28 +1,24 @@
 let carsData = [];
 
-// =====================
-// الوضع الليلي
-// =====================
+/* ===== الوضع الليلي ===== */
 function toggleDark() {
     document.body.classList.toggle('dark');
-    localStorage.setItem('darkMode',
-        document.body.classList.contains('dark'));
+    localStorage.setItem(
+        'darkMode',
+        document.body.classList.contains('dark')
+    );
 }
 
 if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark');
 }
 
-// =====================
-// تنظيف النص
-// =====================
+/* ===== تنظيف النص ===== */
 function normalize(text) {
     return text?.toString().replace(/\s+/g, '').toUpperCase();
 }
 
-// =====================
-// تحميل CSV
-// =====================
+/* ===== تحميل CSV ===== */
 fetch('تحديث بيانات الشركات (1).csv')
     .then(res => res.text())
     .then(data => {
@@ -32,16 +28,16 @@ fetch('تحديث بيانات الشركات (1).csv')
         for (let i = 1; i < rows.length; i++) {
             const cols = rows[i].split(',');
             let obj = {};
+
             headers.forEach((h, index) => {
                 obj[h.trim()] = cols[index]?.trim();
             });
+
             carsData.push(obj);
         }
     });
 
-// =====================
-// البحث التلقائي
-// =====================
+/* ===== البحث التلقائي ===== */
 plateInput.addEventListener('input', search);
 employeeInput.addEventListener('input', search);
 
@@ -51,6 +47,7 @@ function search() {
     const container = document.getElementById('results');
 
     container.innerHTML = '';
+
     if (!plate && !employee) return;
 
     carsData.filter(car => {
