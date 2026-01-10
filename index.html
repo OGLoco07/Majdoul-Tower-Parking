@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>مواقف برج مجدول</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
@@ -18,17 +18,17 @@ header {
     display: flex;
     align-items: center;
     gap: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.1);
 }
 
-header img { height: 45px; }
+header img {
+    height: 45px;
+}
 
 header h1 {
     flex: 1;
     text-align: center;
     margin: 0;
     font-size: 22px;
-    font-weight: bold;
 }
 
 .container {
@@ -39,17 +39,25 @@ header h1 {
     border-radius: 10px;
 }
 
-input {
+.search-box {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.search-box input {
     width: 100%;
+    max-width: 400px;
     padding: 14px;
     font-size: 16px;
-    margin-bottom: 20px;
     text-align: center;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 
 th, td {
@@ -80,18 +88,26 @@ footer {
 </header>
 
 <div class="container">
-    <input
-        id="plateInput"
-        placeholder="ابحث برقم أو حروف اللوحة"
-        oninput="searchCar()"
-    >
+
+    <div class="search-box">
+        <input
+            id="plateInput"
+            placeholder="البحث برقم أو حروف اللوحة"
+            oninput="searchByPlate()"
+        >
+
+        <input
+            id="nameInput"
+            placeholder="البحث باسم الموظف"
+            oninput="searchByName()"
+        >
+    </div>
 
     <table id="resultTable" style="display:none">
         <thead>
             <tr>
-                <th>الموظف</th>
-                <th>الشركة</th>
-                <th>اللوحة</th>
+                <th>الموظف / الشركة</th>
+                <th>رقم اللوحة</th>
                 <th>اللون</th>
                 <th>الموديل</th>
                 <th>الحالة</th>
@@ -99,6 +115,7 @@ footer {
         </thead>
         <tbody></tbody>
     </table>
+
 </div>
 
 <footer>خبير الربط – Link Expert</footer>
