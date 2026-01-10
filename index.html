@@ -1,208 +1,84 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>مواقف برج مجدول</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>مواقف برج مجدول</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: "Segoe UI", Tahoma, Arial;
-            background: #f5f7fa;
-            margin: 0;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        body.dark {
-            background: #121212;
-            color: #e0e0e0;
-        }
-
-        header {
-            background: #fff;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        body.dark header {
-            background: #1e1e1e;
-        }
-
-        header img { height: 40px; }
-
-        header h1 {
-            margin: 0;
-            font-size: 20px;
-            text-align: center;
-            flex: 1;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 14px;
-        }
-
-        body.dark .container {
-            background: #1e1e1e;
-        }
-
-        .top-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .top-actions button {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .search-box input {
-            width: 100%;
-            max-width: 360px;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
-
-        .counter {
-            text-align: center;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        /* ===== جدول (شاشات كبيرة) ===== */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
-
-        th {
-            background: #1f2a44;
-            color: #fff;
-        }
-
-        /* ===== كروت (جوال) ===== */
-        .cards {
-            display: none;
-            gap: 12px;
-            flex-direction: column;
-        }
-
-        .card {
-            border-radius: 12px;
-            padding: 14px;
-            background: #f9f9f9;
-        }
-
-        body.dark .card {
-            background: #2a2a2a;
-        }
-
-        .card.active { border-right: 6px solid #1b7f3a; }
-        .card.inactive { border-right: 6px solid #b30000; }
-
-        .status {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-
-        .status.active {
-            background: #e6f7ed;
-            color: #1b7f3a;
-        }
-
-        .status.inactive {
-            background: #fdeaea;
-            color: #b30000;
-        }
-
-        footer {
-            text-align: center;
-            padding: 15px;
-            font-size: 14px;
-            color: #777;
-        }
-
-        /* ===== Responsive ===== */
-        @media (max-width: 768px) {
-            table { display: none; }
-            .cards { display: flex; }
-        }
-    </style>
+<style>
+*{box-sizing:border-box}
+body{font-family:"Segoe UI",Tahoma,Arial;background:#f5f7fa;margin:0}
+body.dark{background:#121212;color:#e0e0e0}
+header{background:#fff;padding:15px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+body.dark header{background:#1e1e1e}
+header img{height:40px}
+header h1{margin:0;font-size:20px;text-align:center;flex:1}
+.container{max-width:1000px;margin:20px auto;background:#fff;padding:20px;border-radius:14px}
+body.dark .container{background:#1e1e1e}
+.top-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:15px}
+.top-actions button{padding:8px 16px;border-radius:8px;border:none;cursor:pointer}
+.search-box{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:15px}
+.search-box input{width:100%;max-width:360px;padding:12px;border-radius:8px;border:1px solid #ccc;text-align:center}
+.counter{text-align:center;margin-bottom:15px;font-weight:bold}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #ddd;text-align:center}
+th{background:#1f2a44;color:#fff}
+.cards{display:none;gap:12px;flex-direction:column}
+.card{border-radius:12px;padding:14px;background:#f9f9f9}
+body.dark .card{background:#2a2a2a}
+.card.active{border-right:6px solid #1b7f3a}
+.card.inactive{border-right:6px solid #b30000}
+.status{display:inline-block;margin-top:8px;padding:6px 14px;border-radius:20px;font-weight:bold}
+.status.active{background:#e6f7ed;color:#1b7f3a}
+.status.inactive{background:#fdeaea;color:#b30000}
+footer{text-align:center;padding:15px;font-size:14px;color:#777}
+@media (max-width:768px){
+table{display:none}
+.cards{display:flex}
+}
+</style>
 </head>
+
 <body>
 
 <header>
-    <img src="Majdoul.png">
-    <h1>مواقف برج مجدول</h1>
-    <img src="linkexpert.png">
+<img src="Majdoul.png">
+<h1>مواقف برج مجدول</h1>
+<img src="linkexpert.png">
 </header>
 
 <div class="container">
 
-    <div class="top-actions">
-        <button onclick="clearSearch()">🧹 مسح البحث</button>
-        <button onclick="toggleDarkMode()">🌙 وضع ليلي</button>
-    </div>
+<div class="top-actions">
+<button onclick="clearSearch()">🧹 مسح البحث</button>
+<button onclick="toggleDarkMode()">🌙 وضع ليلي</button>
+</div>
 
-    <div class="search-box">
-        <input id="plateInput" placeholder="البحث برقم / حروف اللوحة" oninput="searchByPlate()">
-        <input id="nameInput" placeholder="البحث باسم الموظف" oninput="searchByName()">
-    </div>
+<div class="search-box">
+<input id="plateInput" placeholder="البحث برقم / حروف اللوحة" oninput="searchByPlate()">
+<input id="nameInput" placeholder="البحث باسم الموظف" oninput="searchByName()">
+</div>
 
-    <div class="counter" id="counter"></div>
+<div class="counter" id="counter"></div>
 
-    <table id="resultTable">
-        <thead>
-            <tr>
-                <th>الموظف / الشركة</th>
-                <th>اللوحة</th>
-                <th>اللون</th>
-                <th>الموديل</th>
-                <th>الحالة</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+<table id="resultTable">
+<thead>
+<tr>
+<th>الموظف / الشركة</th>
+<th>اللوحة</th>
+<th>اللون</th>
+<th>الموديل</th>
+<th>الحالة</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
 
-    <div class="cards" id="cards"></div>
+<div class="cards" id="cards"></div>
 
 </div>
 
-<footer>
-    خبير الربط – Link Expert
-</footer>
+<footer>خبير الربط – Link Expert</footer>
 
 <script src="script.js"></script>
 </body>
