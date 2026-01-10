@@ -4,15 +4,22 @@ let lastAlertKey = null;
 // =====================
 // تنظيف النص
 // =====================
-function normalize(text) {
+function normalizePlate(text) {
     return text
         ?.toString()
         .replace(/\s+/g, '')
         .toUpperCase();
 }
 
+function normalizeName(text) {
+    return text
+        ?.toString()
+        .trim()
+        .toUpperCase();
+}
+
 // =====================
-// تحميل ملف CSV
+// تحميل CSV
 // =====================
 fetch('تحديث بيانات الشركات (1).csv')
     .then(res => res.text())
@@ -31,30 +38,23 @@ fetch('تحديث بيانات الشركات (1).csv')
 
             carsData.push(obj);
         }
-
-        console.log('CSV Loaded:', carsData.length);
-    })
-    .catch(err => {
-        console.error(err);
-        alert('فشل تحميل ملف البيانات');
     });
 
 // =====================
-// تحديد حالة المركبة
+// حالة المركبة
 // =====================
 function isInactive(car) {
-    const status = normalize(car['Status']);
-    return status === 'INACTIVE' || status === 'غيرنشط';
+    return normalizeName(car['Status']) === 'INACTIVE';
 }
 
 // =====================
-// تنبيه صوتي + اهتزاز
+// تنبيه غير نشط
 // =====================
-function alertInactive(key) {
+function triggerAlert(key) {
     if (lastAlertKey === key) return;
     lastAlertKey = key;
 
-    const audio = new Audio('alert.mp3'); // ضع ملف صوتي في نفس المجلد
+    const audio = new Audio('alert.mp3');
     audio.play().catch(() => {});
 
     if (navigator.vibrate) {
@@ -63,32 +63,12 @@ function alertInactive(key) {
 }
 
 // =====================
-// البحث (اسم / لوحة)
+// عرض النتائج
 // =====================
-function searchCar() {
-    const inputRaw = document.getElementById('plateInput').value;
-    const input = normalize(inputRaw);
-
+function renderResults(results) {
     const table = document.getElementById('resultTable');
     const tbody = table.querySelector('tbody');
     tbody.innerHTML = '';
-
-    if (!input) {
-        table.style.display = 'none';
-        return;
-    }
-
-    const results = carsData.filter(car => {
-        const plateEn = normalize(car['Car No. (English)']);
-        const plateAr = normalize(car['Car No. (Arabic)']);
-        const employee = normalize(car['Employee Name']);
-
-        return (
-            plateEn.includes(input) ||
-            plateAr.includes(input) ||
-            employee.includes(input)
-        );
-    });
 
     if (results.length === 0) {
         table.style.display = 'none';
@@ -97,13 +77,11 @@ function searchCar() {
 
     results.forEach(car => {
         const inactive = isInactive(car);
-        const key = car['Car No. (English)'] || car['Car No. (Arabic)'] || car['Employee Name'];
+        const key = car['Car No. (English)'] || car['Employee Name'];
 
-        if (inactive) {
-            alertInactive(key);
-        }
+        if (inactive) triggerAlert(key);
 
-        const row = `
+        tbody.innerHTML += `
             <tr class="${inactive ? 'row-inactive' : 'row-active'}">
                 <td>
                     <strong>${car['Employee Name'] || '-'}</strong><br>
@@ -119,9 +97,42 @@ function searchCar() {
                 </td>
             </tr>
         `;
-
-        tbody.innerHTML += row;
     });
 
     table.style.display = 'block';
+}
+
+// =====================
+// البحث باللوحة
+// =====================
+function searchByPlate() {
+    document.getElementById('nameInput').value = '';
+
+    const input = normalizePlate(document.getElementById('plateInput').value);
+    if (!input) return renderResults([]);
+
+    const results = carsData.filter(car => {
+        return (
+            normalizePlate(car['Car No. (English)']).includes(input) ||
+            normalizePlate(car['Car No. (Arabic)']).includes(input)
+        );
+    });
+
+    renderResults(results);
+}
+
+// =====================
+// البحث بالاسم
+// =====================
+function searchByName() {
+    document.getElementById('plateInput').value = '';
+
+    const input = normalizeName(document.getElementById('nameInput').value);
+    if (!input) return renderResults([]);
+
+    const results = carsData.filter(car =>
+        normalizeName(car['Employee Name']).includes(input)
+    );
+
+    renderResults(results);
 }
