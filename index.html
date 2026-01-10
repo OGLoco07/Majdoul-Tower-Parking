@@ -41,7 +41,6 @@ header {
     background: var(--card);
     padding: 18px 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,.1);
-    position: relative;
     text-align: center;
 }
 
@@ -55,17 +54,15 @@ header img {
     height: 45px;
 }
 
+.toggle {
+    cursor: pointer;
+    font-size: 22px;
+    user-select: none;
+}
+
 header h1 {
     font-size: 20px;
     margin: 10px 0 0;
-}
-
-.toggle {
-    position: absolute;
-    left: 15px;
-    top: 15px;
-    cursor: pointer;
-    font-size: 20px;
 }
 
 /* ===== Content ===== */
@@ -137,10 +134,12 @@ footer strong {
 <div class="page">
 
 <header>
-    <div class="toggle" onclick="toggleDark()">🌙</div>
-
     <div class="header-logos">
         <img src="Majdoul.png" alt="Majdoul Tower">
+
+        <!-- زر الوضع الليلي في المنتصف -->
+        <div class="toggle" onclick="toggleDark()">🌙</div>
+
         <img src="linkexpert.png" alt="Link Expert">
     </div>
 
