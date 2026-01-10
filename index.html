@@ -9,132 +9,110 @@
         * { box-sizing: border-box; }
 
         body {
-            font-family: "Segoe UI", Tahoma, Arial;
-            background: #f5f7fa;
+            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
             margin: 0;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        body.dark {
-            background: #121212;
-            color: #e0e0e0;
         }
 
         header {
             background: #fff;
-            padding: 15px 20px;
+            padding: 15px 25px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        body.dark header {
-            background: #1e1e1e;
-        }
-
-        header img { height: 40px; }
+        header img { height: 45px; }
 
         header h1 {
             margin: 0;
-            font-size: 20px;
-            text-align: center;
+            font-size: 22px;
+            color: #1f2a44;
             flex: 1;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-top: 8px;
+            color: #555;
+            font-size: 14px;
         }
 
         .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 14px;
-        }
-
-        body.dark .container {
-            background: #1e1e1e;
-        }
-
-        .top-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .top-actions button {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         .search-box {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .search-box input {
             width: 100%;
-            max-width: 360px;
-            padding: 12px;
-            border-radius: 8px;
+            max-width: 380px;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 10px;
             border: 1px solid #ccc;
             text-align: center;
         }
 
-        .counter {
+        .actions {
             text-align: center;
-            margin-bottom: 15px;
-            font-weight: bold;
+            margin-bottom: 20px;
         }
 
-        /* ===== جدول (شاشات كبيرة) ===== */
+        .clear-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #e0e0e0;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
 
         th, td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 12px;
             text-align: center;
+            border-bottom: 1px solid #ddd;
+            font-size: 15px;
         }
 
         th {
             background: #1f2a44;
-            color: #fff;
+            color: white;
         }
 
-        /* ===== كروت (جوال) ===== */
-        .cards {
-            display: none;
-            gap: 12px;
-            flex-direction: column;
+        .row-active {
+            background: #f8fff9;
+            border-right: 6px solid #1b7f3a;
         }
 
-        .card {
-            border-radius: 12px;
-            padding: 14px;
-            background: #f9f9f9;
+        .row-inactive {
+            background: #fff5f5;
+            border-right: 6px solid #b30000;
         }
-
-        body.dark .card {
-            background: #2a2a2a;
-        }
-
-        .card.active { border-right: 6px solid #1b7f3a; }
-        .card.inactive { border-right: 6px solid #b30000; }
 
         .status {
-            display: inline-block;
-            margin-top: 8px;
             padding: 6px 14px;
             border-radius: 20px;
             font-weight: bold;
+            display: inline-block;
         }
 
         .status.active {
@@ -151,52 +129,62 @@
             text-align: center;
             padding: 15px;
             font-size: 14px;
-            color: #777;
+            color: #555;
         }
 
-        /* ===== Responsive ===== */
-        @media (max-width: 768px) {
-            table { display: none; }
-            .cards { display: flex; }
+        /* 📱 للجوال */
+        @media (max-width: 600px) {
+            th, td { font-size: 14px; }
+            header h1 { font-size: 18px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <img src="Majdoul.png">
+    <img src="Majdoul.png" alt="Majdoul Tower">
     <h1>مواقف برج مجدول</h1>
-    <img src="linkexpert.png">
+    <img src="linkexpert.png" alt="Link Expert">
 </header>
+
+<div class="subtitle">
+    نظام التحقق من المركبات المصرّح لها بالدخول
+</div>
 
 <div class="container">
 
-    <div class="top-actions">
-        <button onclick="clearSearch()">🧹 مسح البحث</button>
-        <button onclick="toggleDarkMode()">🌙 وضع ليلي</button>
-    </div>
-
     <div class="search-box">
-        <input id="plateInput" placeholder="البحث برقم / حروف اللوحة" oninput="searchByPlate()">
-        <input id="nameInput" placeholder="البحث باسم الموظف" oninput="searchByName()">
+        <input
+            type="text"
+            id="plateInput"
+            placeholder="🔢 البحث برقم / حروف اللوحة"
+            oninput="searchByPlate()"
+        >
+
+        <input
+            type="text"
+            id="nameInput"
+            placeholder="👤 البحث باسم الموظف"
+            oninput="searchByName()"
+        >
     </div>
 
-    <div class="counter" id="counter"></div>
+    <div class="actions">
+        <button class="clear-btn" onclick="clearSearch()">🧹 مسح البحث</button>
+    </div>
 
-    <table id="resultTable">
+    <table id="resultTable" style="display:none;">
         <thead>
             <tr>
                 <th>الموظف / الشركة</th>
-                <th>اللوحة</th>
-                <th>اللون</th>
-                <th>الموديل</th>
+                <th>رقم اللوحة</th>
+                <th>لون السيارة</th>
+                <th>موديل السيارة</th>
                 <th>الحالة</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
-
-    <div class="cards" id="cards"></div>
 
 </div>
 
