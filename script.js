@@ -1,11 +1,7 @@
 let carsData = [];
 
-// تنظيف النص (إزالة المسافات وتحويله لحروف كبيرة)
 function normalize(text) {
-    return text
-        ?.toString()
-        .replace(/\s+/g, '')
-        .toUpperCase();
+    return text?.toString().replace(/\s+/g, '').toUpperCase();
 }
 
 // تحميل CSV
@@ -17,47 +13,52 @@ fetch('تحديث بيانات الشركات (1).csv')
 
         for (let i = 1; i < rows.length; i++) {
             const cols = rows[i].split(',');
-            if (cols.length >= headers.length) {
-                let obj = {};
-                headers.forEach((h, index) => {
-                    obj[h.trim()] = cols[index]?.trim();
-                });
-                carsData.push(obj);
-            }
+            let obj = {};
+            headers.forEach((h, index) => {
+                obj[h.trim()] = cols[index]?.trim();
+            });
+            carsData.push(obj);
         }
     });
 
-function searchCar() {
-    const input = normalize(document.getElementById('plateInput').value);
-    const table = document.getElementById('resultTable');
-    const tbody = table.querySelector('tbody');
+// البحث التلقائي
+document.getElementById('plateInput').addEventListener('input', search);
+document.getElementById('employeeInput').addEventListener('input', search);
 
-    tbody.innerHTML = '';
+function search() {
+    const plate = normalize(plateInput.value);
+    const employee = normalize(employeeInput.value);
+    const container = document.getElementById('results');
+
+    container.innerHTML = '';
+
+    if (!plate && !employee) return;
 
     const results = carsData.filter(car => {
-        const en = normalize(car['Car No. (English)']);
-        const ar = normalize(car['Car No. (Arabic)']);
-        return en?.includes(input) || ar?.includes(input);
-    });
+        const pEn = normalize(car['Car No. (English)']);
+        const pAr = normalize(car['Car No. (Arabic)']);
+        const emp = normalize(car['Employee Name']);
 
-    if (results.length === 0) {
-        alert('لم يتم العثور على المركبة');
-        table.style.display = 'none';
-        return;
-    }
+        return (
+            (!plate || pEn?.includes(plate) || pAr?.includes(plate)) &&
+            (!employee || emp?.includes(employee))
+        );
+    });
 
     results.forEach(car => {
-        const row = `
-            <tr>
-                <td>${car['Client'] || '-'}</td>
-                <td>${car['Car No. (English)'] || car['Car No. (Arabic)']}</td>
-                <td>${car['Car Color'] || '-'}</td>
-                <td>${car['Car Model'] || '-'}</td>
-                <td>${car['Status'] || '-'}</td>
-            </tr>
-        `;
-        tbody.innerHTML += row;
-    });
+        const active = car['Status']?.includes('نشط') || normalize(car['Status']) === 'ACTIVE';
 
-    table.style.display = 'table';
+        container.innerHTML += `
+            <div class="card ${active ? 'active' : 'inactive'}">
+                <div><strong>العميل:</strong> ${car['Client'] || '-'}</div>
+                <div><strong>اللوحة:</strong> ${car['Car No. (English)'] || car['Car No. (Arabic)']}</div>
+                <div><strong>الموديل:</strong> ${car['Car Model'] || '-'}</div>
+                <div><strong>اللون:</strong> ${car['Car Color'] || '-'}</div>
+                <div><strong>الموظف:</strong> ${car['Employee Name'] || '-'}</div>
+                <div class="status ${active ? 'active' : 'inactive'}">
+                    ${active ? '🟢 نشط' : '🔴 غير نشط'}
+                </div>
+            </div>
+        `;
+    });
 }
