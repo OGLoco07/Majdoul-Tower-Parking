@@ -13,7 +13,7 @@ function normalize(text) {
 /***********************
   LOAD CSV
 ************************/
-fetch('تحديث بيانات الشركات (1).csv')
+fetch('شركات.csv')
     .then(res => res.text())
     .then(data => {
         const rows = data.split('\n').filter(r => r.trim() !== '');
