@@ -1,110 +1,81 @@
-/***********************
-  GLOBAL DATA
-************************/
-let carsData = [];
-let darkMode = false;
+ let carsData = [];
 
-/***********************
-  HELPERS
-************************/
-function normalize(text) {
-    return text ? text.toString().trim().toUpperCase() : '';
+/* ===== الوضع الليلي ===== */
+function toggleDark() {
+    document.body.classList.toggle('dark');
+    localStorage.setItem(
+        'darkMode',
+        document.body.classList.contains('dark')
+    );
 }
 
-/***********************
-  LOAD CSV
-************************/
+if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark');
+}
+
+/* ===== تنظيف النص ===== */
+function normalize(text) {
+    return text?.toString().replace(/\s+/g, '').toUpperCase();
+}
+
+/* ===== تحميل CSV ===== */
 fetch('تحديث بيانات الشركات (1).csv')
     .then(res => res.text())
     .then(data => {
-        const rows = data.split('\n').filter(r => r.trim() !== '');
-        const headers = rows[0]
-            .split(',')
-            .map(h => h.replace('\ufeff', '').trim());
-
-        const col = {
-            client: headers.indexOf('Client'),
-            plate: headers.indexOf('Plate'),
-            model: headers.indexOf('Model'),
-            color: headers.indexOf('Color'),
-            employee: headers.indexOf('Employee Name'),
-            status: headers.indexOf('Status')
-        };
+        const rows = data.split('\n');
+        const headers = rows[0].split(',');
 
         for (let i = 1; i < rows.length; i++) {
             const cols = rows[i].split(',');
+            let obj = {};
 
-            carsData.push({
-                client: cols[col.client]?.trim() || '-',
-                plate: cols[col.plate]?.trim() || '-',
-                model: cols[col.model]?.trim() || '-',
-                color: cols[col.color]?.trim() || '-',
-                employee: cols[col.employee]?.trim() || '-',
-                status: cols[col.status]?.trim() || '-'
+            headers.forEach((h, index) => {
+                obj[h.trim()] = cols[index]?.trim();
             });
-        }
 
-        console.log('CSV Loaded ✅', carsData.length);
-    })
-    .catch(err => {
-        console.error('CSV Load Error ❌', err);
+            carsData.push(obj);
+        }
     });
 
-/***********************
-  SEARCH (AUTO)
-************************/
-function searchCar() {
-    const input = normalize(document.getElementById('plateInput').value);
+/* ===== البحث التلقائي ===== */
+plateInput.addEventListener('input', search);
+employeeInput.addEventListener('input', search);
+
+function search() {
+    const plate = normalize(plateInput.value);
+    const employee = normalize(employeeInput.value);
     const container = document.getElementById('results');
 
     container.innerHTML = '';
 
-    if (!input) return;
-    if (carsData.length === 0) return;
+    if (!plate && !employee) return;
 
-    const results = carsData.filter(car =>
-        normalize(car.plate).includes(input)
-    );
+    carsData.filter(car => {
+        const pEn = normalize(car['Car No. (English)']);
+        const pAr = normalize(car['Car No. (Arabic)']);
+        const emp = normalize(car['Employee Name']);
 
-    if (results.length === 0) {
-        container.innerHTML =
-            `<p style="text-align:center;">لا توجد نتائج</p>`;
-        return;
-    }
+        return (
+            (!plate || pEn?.includes(plate) || pAr?.includes(plate)) &&
+            (!employee || emp?.includes(employee))
+        );
+    }).forEach(car => {
 
-    results.forEach(car => {
         const active =
-            car.status.toLowerCase() === 'active' ||
-            car.status.includes('نشط');
+            car['Status']?.includes('نشط') ||
+            normalize(car['Status']) === 'ACTIVE';
 
         container.innerHTML += `
         <div class="card ${active ? 'active' : 'inactive'}">
-            <div><strong>العميل:</strong> ${car.client}</div>
-            <div><strong>اللوحة:</strong> ${car.plate}</div>
-            <div><strong>الموديل:</strong> ${car.model}</div>
-            <div><strong>اللون:</strong> ${car.color}</div>
-            <div><strong>اسم الموظف:</strong> ${car.employee}</div>
+            <div><strong>العميل:</strong> ${car['Client'] || '-'}</div>
+            <div><strong>اللوحة:</strong> ${car['Car No. (English)'] || car['Car No. (Arabic)']}</div>
+            <div><strong>الموديل:</strong> ${car['Car Model'] || '-'}</div>
+            <div><strong>اللون:</strong> ${car['Car Color'] || '-'}</div>
+            <div><strong>الموظف:</strong> ${car['Employee Name'] || '-'}</div>
+
             <div class="status ${active ? 'active' : 'inactive'}">
                 ${active ? '🟢 نشط' : '🔴 غير نشط'}
             </div>
         </div>`;
     });
 }
-
-/***********************
-  DARK MODE
-************************/
-function toggleDarkMode() {
-    darkMode = !darkMode;
-    document.body.classList.toggle('dark-mode', darkMode);
-}
-
-/***********************
-  AUTO SEARCH LISTENER
-************************/
-document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('plateInput');
-    if (input) {
-        input.addEventListener('input', searchCar);
-    }
-});
