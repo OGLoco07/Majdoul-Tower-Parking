@@ -2,7 +2,6 @@
   GLOBAL DATA
 ************************/
 let carsData = [];
-let darkMode = false;
 
 /***********************
   HELPERS
@@ -46,25 +45,32 @@ fetch('تحديث بيانات الشركات (1).csv')
 
         console.log('CSV Loaded ✅', carsData.length);
     })
-    .catch(err => {
-        console.error('CSV Load Error ❌', err);
-    });
+    .catch(err => console.error('CSV Error ❌', err));
 
 /***********************
-  SEARCH (AUTO)
+  SEARCH
 ************************/
-function searchCar() {
-    const input = normalize(document.getElementById('plateInput').value);
+function runSearch() {
+    const plateInput = normalize(document.getElementById('plateInput').value);
+    const empInput = normalize(document.getElementById('employeeInput').value);
     const container = document.getElementById('results');
 
     container.innerHTML = '';
 
-    if (!input) return;
+    if (!plateInput && !empInput) return;
     if (carsData.length === 0) return;
 
-    const results = carsData.filter(car =>
-        normalize(car.plate).includes(input)
-    );
+    const results = carsData.filter(car => {
+        const matchPlate = plateInput
+            ? normalize(car.plate).includes(plateInput)
+            : true;
+
+        const matchEmp = empInput
+            ? normalize(car.employee).includes(empInput)
+            : true;
+
+        return matchPlate && matchEmp;
+    });
 
     if (results.length === 0) {
         container.innerHTML =
@@ -74,7 +80,7 @@ function searchCar() {
 
     results.forEach(car => {
         const active =
-            car.status.toLowerCase() === 'active' ||
+            car.status.toLowerCase().includes('active') ||
             car.status.includes('نشط');
 
         container.innerHTML += `
@@ -92,19 +98,19 @@ function searchCar() {
 }
 
 /***********************
-  DARK MODE
+  DARK MODE (MATCH HTML)
 ************************/
-function toggleDarkMode() {
-    darkMode = !darkMode;
-    document.body.classList.toggle('dark-mode', darkMode);
+function toggleDark() {
+    document.body.classList.toggle('dark');
 }
 
 /***********************
-  AUTO SEARCH LISTENER
+  AUTO SEARCH
 ************************/
 document.addEventListener('DOMContentLoaded', () => {
-    const input = document.getElementById('plateInput');
-    if (input) {
-        input.addEventListener('input', searchCar);
-    }
+    document.getElementById('plateInput')
+        .addEventListener('input', runSearch);
+
+    document.getElementById('employeeInput')
+        .addEventListener('input', runSearch);
 });
