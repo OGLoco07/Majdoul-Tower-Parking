@@ -1,6 +1,8 @@
 let carsData = [];
 
-/* ===== الوضع الليلي ===== */
+/* =====================
+   الوضع الليلي
+===================== */
 function toggleDark() {
     document.body.classList.toggle('dark');
     localStorage.setItem(
@@ -13,65 +15,99 @@ if (localStorage.getItem('darkMode') === 'true') {
     document.body.classList.add('dark');
 }
 
-/* ===== تنظيف النص ===== */
+/* =====================
+   أدوات مساعدة
+===================== */
 function normalize(text) {
-    return text?.toString().replace(/\s+/g, '').toUpperCase();
+    return text?.toString().trim();
 }
 
-/* ===== تحميل CSV ===== */
+function isPlate(val) {
+    return /[A-Z0-9]/i.test(val) && val.length <= 10;
+}
+
+function isColor(val) {
+    return /(أبيض|اسود|أسود|فضي|فضي|أحمر|ازرق|أزرق|رمادي|black|white|silver|red|blue|gray)/i.test(val);
+}
+
+function isStatus(val) {
+    return /(ACTIVE|INACTIVE|نشط|غير)/i.test(val);
+}
+
+/* =====================
+   تحميل CSV + ترتيب ذكي
+===================== */
 fetch('تحديث بيانات الشركات (1).csv')
     .then(res => res.text())
     .then(data => {
         const rows = data.split('\n');
-        const headers = rows[0].split(',');
 
         for (let i = 1; i < rows.length; i++) {
-            const cols = rows[i].split(',');
-            let obj = {};
+            if (!rows[i].trim()) continue;
 
-            headers.forEach((h, index) => {
-                obj[h.trim()] = cols[index]?.trim();
+            const cols = rows[i].split(',').map(c => c.trim());
+
+            let car = {
+                Client: '',
+                Plate: '',
+                Model: '',
+                Color: '',
+                Employee: '',
+                Status: ''
+            };
+
+            cols.forEach(val => {
+                if (!val) return;
+
+                if (!car.Status && isStatus(val)) {
+                    car.Status = val;
+                } else if (!car.Color && isColor(val)) {
+                    car.Color = val;
+                } else if (!car.Plate && isPlate(val)) {
+                    car.Plate = val;
+                } else if (!car.Model && /\d/.test(val)) {
+                    car.Model = val;
+                } else if (!car.Employee && val.length > 3) {
+                    car.Employee = val;
+                } else if (!car.Client) {
+                    car.Client = val;
+                }
             });
 
-            carsData.push(obj);
+            carsData.push(car);
         }
     });
 
-/* ===== البحث التلقائي ===== */
+/* =====================
+   البحث
+===================== */
 plateInput.addEventListener('input', search);
 employeeInput.addEventListener('input', search);
 
 function search() {
-    const plate = normalize(plateInput.value);
-    const employee = normalize(employeeInput.value);
+    const plateVal = normalize(plateInput.value);
+    const empVal = normalize(employeeInput.value);
     const container = document.getElementById('results');
 
     container.innerHTML = '';
-
-    if (!plate && !employee) return;
+    if (!plateVal && !empVal) return;
 
     carsData.filter(car => {
-        const pEn = normalize(car['Car No. (English)']);
-        const pAr = normalize(car['Car No. (Arabic)']);
-        const emp = normalize(car['Employee Name']);
-
         return (
-            (!plate || pEn?.includes(plate) || pAr?.includes(plate)) &&
-            (!employee || emp?.includes(employee))
+            (!plateVal || car.Plate.includes(plateVal)) &&
+            (!empVal || car.Employee.includes(empVal))
         );
     }).forEach(car => {
 
-        const active =
-            car['Status']?.includes('نشط') ||
-            normalize(car['Status']) === 'ACTIVE';
+        const active = isStatus(car.Status) && !/غير/i.test(car.Status);
 
         container.innerHTML += `
         <div class="card ${active ? 'active' : 'inactive'}">
-            <div><strong>العميل:</strong> ${car['Client'] || '-'}</div>
-            <div><strong>اللوحة:</strong> ${car['Car No. (English)'] || car['Car No. (Arabic)']}</div>
-            <div><strong>الموديل:</strong> ${car['Car Model'] || '-'}</div>
-            <div><strong>اللون:</strong> ${car['Car Color'] || '-'}</div>
-            <div><strong>الموظف:</strong> ${car['Employee Name'] || '-'}</div>
+            <div><strong>العميل:</strong> ${car.Client || '-'}</div>
+            <div><strong>اللوحة:</strong> ${car.Plate || '-'}</div>
+            <div><strong>الموديل:</strong> ${car.Model || '-'}</div>
+            <div><strong>اللون:</strong> ${car.Color || '-'}</div>
+            <div><strong>الموظف:</strong> ${car.Employee || '-'}</div>
 
             <div class="status ${active ? 'active' : 'inactive'}">
                 ${active ? '🟢 نشط' : '🔴 غير نشط'}
